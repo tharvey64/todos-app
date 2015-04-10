@@ -3,27 +3,35 @@ $(document).ready(function(){
         $('.start').css('display', 'inline-block');
     }else{
         $('.access').css('display', 'inline-block');
+        var template = $('#add_key').html();
+        var info = Mustache.render(template, {'key':$.cookie('key')});
+        $('.access').append(info);
         // $('.delete').css('display', 'inline-block');
     }
-    
-    $('#new_user').on('submit', function(event){
+
+    $('#new_user').on('submit',function(event){
        event.preventDefault()
        $.post("/todos/new_user/", $('#new_user').serialize(), function(data){
-            $.cookie('key',data.user_key);
-            var template = $('#userkey').html();
-            var info = Mustache.to_html(template, {'key':$.cookie('key')});
-            $('.new').css('display', 'inline-block');
-            $('.log_in').css('display', 'inline-block');
-            $('#addddd').html(info);
+            
+            $.cookie('key', data.user_key);
+            var template = $('#add_key').html();
+            var info = Mustache.render(template, {'key':$.cookie('key')});
+            $('.access').append(info);
+
+            $('.start').css('display', 'none');
+            $('.access').css('display', 'inline-block');
         });
     });
 
     $('#sign_in').on('submit',function(event){
        event.preventDefault()
        $.post("/todos/sign_in/", $('#sign_in').serialize(), function(data){
+            
             $.cookie('key', data.user_key);
-            var template = $('#user-key').html();
-            var info = Mustache.to_html(template, {'user_key':$.cookie('key')});
+            var template = $('#add_key').html();
+            var info = Mustache.render(template, {'key':$.cookie('key')});
+            $('.access').append(info);
+
             $('.start').css('display', 'none');
             $('.access').css('display', 'inline-block');
         });
@@ -35,25 +43,22 @@ $(document).ready(function(){
         $('.start').css('display', 'inline-block');
         $('.access').css('display', 'none');
     });
-
-    $('#add_form').on('submit',function(event){
+    
+    $('.access').on('submit', '#add_form',function(event){
         event.preventDefault()
-        $.post("/todos/add_todo/", $('#add_form').serialize(), function(data){
-            
+        $.post("/todos/add_todo/"+$.cookie('key')+"/", $('#add_form').serialize(), function(data){
+                // change this to call list function
+                var template = $('#todo-template').html();
+                var info = Mustache.render(template, data);
+                $('footer').append(info);
+
+        });     
+    });
+    $('#log_out').on('click',function(event){
             // $.getJSON('/mysite/alltodos', function(data){
             //     var template = $('#todo-template').html();
             //     var info = Mustache.to_html(template, data);
             //     $('.todos').html(info);
             // });
-
-        });
     });
-
-    $('#update_form').on('submit',function(event){
-        event.preventDefault()
-        console.log()
-    });
-    // not forms yet
-    // $('.list').on('submit',function(event){});
-    // $('.delete').on('submit',function(event){});
 });

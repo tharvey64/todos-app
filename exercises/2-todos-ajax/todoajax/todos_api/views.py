@@ -22,10 +22,18 @@ def list(request,key):
         return Http404("That user key is invalid.")
     todos = Todo.objects.filter(user__key=key)
     if todos:
-        todos = [todo.name for todo in todos] 
+        for todo in todos:
+            todo_list.append({
+                'todo':[
+                    {'id': todo.id},
+                    {'name':todo.name},
+                    {'description':todo.description},
+                    {'status': todo.status}
+                ]
+            }) 
     else:
         todos =  'Nothing to do.'
-    return JsonResponse({'todos': todos})
+    return JsonResponse({'todos': todo_list})
 
 @csrf_exempt
 def incomplete(request,key):
@@ -35,10 +43,18 @@ def incomplete(request,key):
         raise Http404("That user key is invalid.")
     todos = Todo.objects.filter(user__key=key).exclude(status=True)
     if todos:
-        todos = [todo.name for todo in todos] 
+        for todo in todos:
+            todo_list.append({
+                'todo':[
+                    {'id': todo.id},
+                    {'name':todo.name},
+                    {'description':todo.description},
+                    {'status': todo.status}
+                ]
+            })  
     else:
-        todos = 'Nothing to do.'
-    return JsonResponse({'todos': todos})
+        todo_list = 'Nothing to do.'
+    return JsonResponse({'todos': todo_list})
 
 @csrf_exempt
 def date(request,key,date):
@@ -47,13 +63,20 @@ def date(request,key,date):
     except User.DoesNotExist:
         raise Http404("That user key is invalid.")
     date = datetime.strptime(date,'%m-%d-%Y')
-    print(date)
     todos = Todo.objects.filter(user__key=key).filter(created_at=date.date())
     if todos:
-        todos = [todo.name for todo in todos] 
+        for todo in todos:
+            todo_list.append({
+                'todo':[
+                    {'id': todo.id},
+                    {'name':todo.name},
+                    {'description':todo.description},
+                    {'status': todo.status}
+                ]
+            }) 
     else:
-        todos = 'Nothing to do.'
-    return JsonResponse({'todos': todos})
+        todo_list = 'Nothing to do.'
+    return JsonResponse({'todos': todo_list})
 
 @csrf_exempt
 def add(request,key):
@@ -66,7 +89,45 @@ def add(request,key):
         description=request.POST['description'],
         user=user
     )
-    return JsonResponse({'todo': todo.name})
+    return JsonResponse({
+        'todos':[
+                {'todo':[todo.id,
+                todo.name,
+                todo.description,
+                todo.status]}
+        ]
+    })
+    # return JsonResponse({
+    #     'todos':[
+    #         {'id': todo.id},
+    #         {'name':todo.name},
+    #         {'description':todo.description},
+    #         {'status': todo.status}
+    #     ]
+    # })
+
+@csrf_exempt
+def update(request,key,todo_id):
+    try:
+        user = User.objects.get(key=key)
+    except User.DoesNotExist:
+        raise Http404("That user key is invalid.")
+    try:
+        todo = Todo.objects.get(pk=todo_id)
+    except Todo.DoesNotExist:
+        raise Http404("Invalid Todo.")
+    todo.name = name 
+    todo.description = description 
+    todo.status = status
+    todo.save()
+    return JsonResponse({
+        'todos':[
+            {'id': todo.id},
+            {'name':todo.name},
+            {'description':todo.description},
+            {'status': todo.status}
+        ]
+    })
 
 @csrf_exempt
 def delete(request,key,todo_id):
@@ -79,7 +140,14 @@ def delete(request,key,todo_id):
     except Todo.DoesNotExist:
         raise Http404("Invalid Todo.")
     todo.delete()
-    return JsonResponse({'delete': todo.name})
+    return JsonResponse({
+        'todo':[
+            {'id': todo.id},
+            {'name':todo.name},
+            {'description':todo.description},
+            {'status': todo.status}
+        ]
+    })
 
 @csrf_exempt
 def done(request,key,todo_id):
@@ -94,11 +162,17 @@ def done(request,key,todo_id):
         raise Http404("Invalid Todo.")
     todo.status = True
     todo.save()
-    return JsonResponse({'done': todo.name})
+    return JsonResponse({
+        'todo':[
+            {'id': todo.id},
+            {'name':todo.name},
+            {'description':todo.description},
+            {'status': todo.status}
+        ]
+    })
 
 @csrf_exempt
 def new_user(request):
-    print(request.POST['username'])
     user = User.objects.create(
         username=request.POST['username'],
         password=request.POST['password']
@@ -119,19 +193,3 @@ def sign_in(request):
 def log_out(request):
     request.session.flush()
     return JsonResponse({'log_out': 'good bye'})
-
-@csrf_exempt
-def update(request,key,todo_id,name,description,status):
-    try:
-        user = User.objects.get(key=key)
-    except User.DoesNotExist:
-        raise Http404("That user key is invalid.")
-    try:
-        todo = Todo.objects.get(pk=todo_id)
-    except Todo.DoesNotExist:
-        raise Http404("Invalid Todo.")
-    todo.name = name 
-    todo.description = description 
-    todo.status = status
-    todo.save()
-    return JsonResponse({'todo': todo.name})

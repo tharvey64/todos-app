@@ -13,10 +13,6 @@
         </form>
     </div>
 
-    <div class="access">
-        <a id="log_out" href="/todos/log_out/">Log Out</a>
-    </div>
-
     <div class="start">
         <form id="new_user" name="new" action="/todos/new_user/" method="POST">
             <fieldset form="new_user">
@@ -29,13 +25,13 @@
         </form>
     </div>
 
-    {%verbatim%}
-    {{#key}}
-    <script id="user-key" type="text/template">
     <div class="access">
-
-        
-        <form id="add_form" name="add" action="/todos/add_todo/{{key}}/" method="POST">
+        <a id="log_out" href="/todos/log_out/">Log Out</a>
+    {%verbatim%}
+    <script id="add_key" type="text/template">
+    {{#key}}
+       
+        <form id="add_form" action="/todos/add_todo/{{key}}/" method="POST">
             <fieldset form="add_form">
             <legend>Add to your todo list</legend>
             Task: <br></br>
@@ -45,39 +41,37 @@
             <input type="submit" value="Add">
             </fieldset>
         </form>
-    </div>
 
-    {{/key}}
-    </script>
-    {%endverbatim%}
-
-    <div class="access">
-        <form id="update_form" name="add" action="/todos/update/" method="POST">
+        <form id="update_form" action="/todos/update/{{key}}/{{task}}" method="POST">
             <fieldset form="update_form">
             <legend>Edit Task</legend>
             Task: <br></br>
             <input type="text" name="name" value={{ todo.description }}><br></br>
             Goal: <br></br>
-            <textarea name="description" form="add_form">{{ todo.description }}</textarea><br></br>
+            <textarea name="description" form="update_form">{{ todo.description }}</textarea><br></br>
             <input type="submit" value="Update">
             </fieldset>
         </form>
-    </div>
 
-    <div class="access">
-        {%verbatim%}
-        <script id="todo-template" type="text/template">
-        {{#todos}}
-        <div class = "todo">
-            <p>{{todo_text}}</p>
-            <p>Completed: {{completed}}</p>
-        </div>
-        {{/todos}}
-        </script>
-        {%endverbatim%}
-    </div>
+        <a href="/todos/get_todos/{{key}}/">List Todos!</a>
+        // <a href="/todos/update/{{key}}/">List Todos By Date!</a>
+        <a href="/todos/get_incomplete/{{key}}/">List Incomplete Todos</a>
+        // <a id="delete" href="/todos/delete/{{key}}/{{ todo.id }}">Delete</a>
+    {{/key}}
+    </script>
+    {%endverbatim%}
 
-    <div class="access">
-        <a id="delete" href="/todos/delete/{{ user.username }}/{{ todo.id }}">Delete</a>
+    {%verbatim%}
+    <script id="todo-template" type="text/template">
+    {{#todos}}
+    <div class="todo">
+        {{#todo}}
+        <p>{{.}}</p>
+        {{/todo}}
+    </div>
+    {{/todos}}
+    </script>
+    {%endverbatim%}
+    <!-- <p>Completed: {{todo.status}}</p> -->
     </div>
 {% endblock %}
