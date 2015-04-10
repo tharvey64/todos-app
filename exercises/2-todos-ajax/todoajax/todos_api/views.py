@@ -22,13 +22,14 @@ def list(request,key):
         return Http404("That user key is invalid.")
     todos = Todo.objects.filter(user__key=key)
     if todos:
+        todo_list = []
         for todo in todos:
             todo_list.append({
                 'todo':[
-                    {'id': todo.id},
-                    {'name':todo.name},
-                    {'description':todo.description},
-                    {'status': todo.status}
+                    todo.id,
+                    todo.name,
+                    todo.description,
+                    todo.status
                 ]
             }) 
     else:
@@ -43,6 +44,7 @@ def incomplete(request,key):
         raise Http404("That user key is invalid.")
     todos = Todo.objects.filter(user__key=key).exclude(status=True)
     if todos:
+        todo_list = []
         for todo in todos:
             todo_list.append({
                 'todo':[
@@ -65,6 +67,7 @@ def date(request,key,date):
     date = datetime.strptime(date,'%m-%d-%Y')
     todos = Todo.objects.filter(user__key=key).filter(created_at=date.date())
     if todos:
+        todo_list = []
         for todo in todos:
             todo_list.append({
                 'todo':[

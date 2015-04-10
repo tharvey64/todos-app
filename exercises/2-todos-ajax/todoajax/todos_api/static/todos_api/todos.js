@@ -47,18 +47,20 @@ $(document).ready(function(){
     $('.access').on('submit', '#add_form',function(event){
         event.preventDefault()
         $.post("/todos/add_todo/"+$.cookie('key')+"/", $('#add_form').serialize(), function(data){
-                // change this to call list function
-                var template = $('#todo-template').html();
-                var info = Mustache.render(template, data);
-                $('footer').append(info);
+            // change this to call list function
+            var template = $('#todo-template').html();
+            var info = Mustache.render(template, data);
+            $('footer').append(info);
 
         });     
     });
-    $('#log_out').on('click',function(event){
-            // $.getJSON('/mysite/alltodos', function(data){
-            //     var template = $('#todo-template').html();
-            //     var info = Mustache.to_html(template, data);
-            //     $('.todos').html(info);
-            // });
+    $('.access').on('click', '#list-all',function(event){
+        event.preventDefault()
+        $.getJSON('/todos/get_todos/'+ $.cookie('key') +'/', function(data){
+            var template = $('#todo-template').html();
+            var info = Mustache.render(template, {'todos':data.todos});
+            $('footer').append(info);
+            console.log(info)
+        });
     });
 });

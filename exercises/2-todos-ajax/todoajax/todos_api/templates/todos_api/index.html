@@ -29,7 +29,6 @@
         <a id="log_out" href="/todos/log_out/">Log Out</a>
     {%verbatim%}
     <script id="add_key" type="text/template">
-    {{#key}}
        
         <form id="add_form" action="/todos/add_todo/{{key}}/" method="POST">
             <fieldset form="add_form">
@@ -52,12 +51,8 @@
             <input type="submit" value="Update">
             </fieldset>
         </form>
+        <a id="list-all" href="/todos/get_todos/{{key}}/">List Todos!</a>
 
-        <a href="/todos/get_todos/{{key}}/">List Todos!</a>
-        // <a href="/todos/update/{{key}}/">List Todos By Date!</a>
-        <a href="/todos/get_incomplete/{{key}}/">List Incomplete Todos</a>
-        // <a id="delete" href="/todos/delete/{{key}}/{{ todo.id }}">Delete</a>
-    {{/key}}
     </script>
     {%endverbatim%}
 
@@ -65,9 +60,7 @@
     <script id="todo-template" type="text/template">
     {{#todos}}
     <div class="todo">
-        {{#todo}}
-        <p>{{.}}</p>
-        {{/todo}}
+       <p>{{#todo}} {{.}}{{/todo}}</p>
     </div>
     {{/todos}}
     </script>
