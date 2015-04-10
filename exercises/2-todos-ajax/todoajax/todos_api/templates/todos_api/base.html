@@ -1,0 +1,36 @@
+{% load staticfiles %}
+<html>
+<head>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"></script>
+<script src="{%static "todos_api/todos.js" %}"></script>
+<link rel="stylesheet" href="{% static "todos_api/main.css" %}">
+<!-- <link rel="stylesheet" href="{% static "todos_api/reset.css" %}"> -->
+</head>
+<body>
+<div class = "container">
+    <header>
+        {% block header %}
+        <h1>Todo List</h1>
+        {% endblock %}
+    </header>
+
+    <div class="nav">
+    </div>
+
+    <div class = "content">
+        {% block content %}
+        
+        {% endblock %}
+    </div>
+
+    <footer>
+        {% block footer %}
+        <p>Todo List</p>
+        {% endblock %}
+    </footer>
+</div>
+</body>
+</html>

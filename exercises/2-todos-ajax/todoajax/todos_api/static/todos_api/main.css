@@ -1,0 +1,26 @@
+header{
+    border-bottom: 2px solid black;
+}
+
+h2.title{
+    text-decoration: underline;
+}
+
+footer{
+    border-top: 2px solid black;
+}
+.content {
+    display: block;
+}
+.content div{
+    display: none;
+    width:20%;
+}
+
+.new{
+    margin-left: 2em;
+}
+
+.add {
+    margin-left: 2em;
+}
