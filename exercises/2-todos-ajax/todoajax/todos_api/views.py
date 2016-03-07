@@ -100,14 +100,6 @@ def add(request,key):
                 todo.status]}
         ]
     })
-    # return JsonResponse({
-    #     'todos':[
-    #         {'id': todo.id},
-    #         {'name':todo.name},
-    #         {'description':todo.description},
-    #         {'status': todo.status}
-    #     ]
-    # })
 
 @csrf_exempt
 def update(request,key,todo_id):

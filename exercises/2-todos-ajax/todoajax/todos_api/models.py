@@ -1,6 +1,8 @@
+import hashlib
+
 from django.db import models
 from datetime import datetime
-import hashlib
+
 # Create your models here.
 
 class User(models.Model):
